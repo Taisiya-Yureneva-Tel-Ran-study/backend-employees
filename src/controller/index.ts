@@ -2,45 +2,50 @@ import express from 'express';
 import "dotenv/config";
 import morgan from 'morgan';
 import errorHandler from '../middleware/errorHandler.ts';
-import EmployeeServiceMap from '../service/EmployeeServiceMap.ts';
+import {service} from '../service/EmployeeServiceMap.ts';
 import { validateEmployee } from '../middleware/validation.ts';
 
 const PORT = process.env.PORT || 3500;
 
 const app=express();
-app.listen(PORT, () => console.log('Server started on port ', PORT));
-
-let employees = new EmployeeServiceMap;
+const server = app.listen(PORT, () => console.log('Server started on port ', PORT));
 
 app.use(express.json());
 
 app.use(morgan("dev"));
 
-app.get("/", (req, res) => {
-    const re = employees.getAll();
+app.get("/employees", (req, res) => {
+    const re = service.getAll(req.query.department as string);
     res.statusCode =  200;
     res.json(re);
 })
 
-app.post("/", validateEmployee, (req, res) => {
+app.post("/employees", validateEmployee, (req, res) => {
     res.statusCode = 200;
-    res.send(employees.addEmployee(req.body));
+    res.send(service.addEmployee(req.body));
 })
 
-app.get("/:id", (req, res) => {
+app.get("/employees/:id", (req, res) => {
     res.statusCode = 200;
-    res.json(employees.getEmployee(req.params.id));
+    res.json(service.getEmployee(req.params.id));
 })
 
-app.delete("/:id", (req, res) => {
-    employees.deleteEmployee(req.params.id);
+app.delete("/employees/:id", (req, res) => {
+    service.deleteEmployee(req.params.id);
     res.statusCode = 200;
     res.send(`Employee with id '${req.params.id}' removed successfully`);
 });
 
-app.patch("/:id", (req, res) => {
-    const re = employees.editEmployee(req.params.id, req.body);
+app.patch("/employees/:id", (req, res) => {
+    const re = service.editEmployee(req.params.id, req.body);
     res.json(re);
 })
 
 app.use(errorHandler);
+
+function shutdown() {
+    server.close(() => console.log('Server stopped'));
+}
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);

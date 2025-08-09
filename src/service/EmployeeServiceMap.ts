@@ -3,8 +3,9 @@ import { Employee } from "../model/Employee";
 import EmployeeService from "./EmployeeService";
 import { EmployeeExistsError, EmployeeNotFoundError } from "../middleware/errorHandler.ts";
 
-export default class EmployeeServiceMap implements EmployeeService{
-    getAll(): Employee[] {
+class EmployeeServiceMap implements EmployeeService{
+    getAll(department?: string): Employee[] {
+        if (department) return Array.from(this.employees.values()).filter(e => e.department === department);
         return Array.from(this.employees.values());
     }
 
@@ -33,8 +34,11 @@ export default class EmployeeServiceMap implements EmployeeService{
 
         let newEmp = { ...emp, ...obj };
         this.employees.set(id, newEmp);
-        return newEmp;
+        return {...newEmp};
     }
 
-    employees: Map<string, Employee> = new Map();
+    private employees: Map<string, Employee> = new Map();
 }
+
+const service = new EmployeeServiceMap();
+export { service };

@@ -4,6 +4,7 @@
         "module": "esnext",
         "allowImportingTsExtensions": true,
         "allowSyntheticDefaultImports": true,
-        "noEmit": true
+        "noEmit": true,
+        "moduleResolution": "node"
     }
 }
