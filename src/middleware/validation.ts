@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { Employee } from "../model/Employee";
-import { InvalidEmployeeDataError } from "./errorHandler.ts";
+import { ZodType } from "zod";
+import _ from "lodash";
 
-export function validateEmployee(req: Request, _: Response, next: NextFunction) {
+export function validateEmployee(scheme: ZodType<any, any, any>): (req: Request, _: Response, next: NextFunction) => void {
+    return (req: Request, __: Response, next: NextFunction) => {
+
     const emp = req.body as Employee;
-    if (!emp.fullName || emp.fullName.length < 1 || !emp.birthDate || emp.birthDate.length < 1 ||
-        !emp.department || emp.department.length < 1 || !emp.salary || typeof emp.salary !== "number" ||
-        Number.isNaN(Number(emp.salary))
-    ) {
-        throw new InvalidEmployeeDataError("Check that all employee data is correct and try again");
+    if (!_.isEmpty(emp)) {
+        scheme.parse(emp);
     }
-    next();
+
+    next();}
 }

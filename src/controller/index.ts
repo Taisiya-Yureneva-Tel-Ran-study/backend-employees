@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import errorHandler from '../middleware/errorHandler.ts';
 import {service} from '../service/EmployeeServiceMap.ts';
 import { validateEmployee } from '../middleware/validation.ts';
+import { EmployeeScheme } from '../middleware/schemes.ts';
 
 const PORT = process.env.PORT || 3500;
 
@@ -20,7 +21,7 @@ app.get("/employees", (req, res) => {
     res.json(re);
 })
 
-app.post("/employees", validateEmployee, (req, res) => {
+app.post("/employees", validateEmployee(EmployeeScheme), (req, res) => {
     res.statusCode = 200;
     res.send(service.addEmployee(req.body));
 })
