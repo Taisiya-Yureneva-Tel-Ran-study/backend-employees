@@ -20,6 +20,8 @@ export default function errorHandler(err: Error, _: Request, res: Response, __: 
     let message = err.message;
     if (err instanceof EmployeeNotFoundError)
         res.statusCode = 404;
+    if (err instanceof EmployeeExistsError)
+        res.statusCode = 409;
     if (err instanceof ZodError) {
         message = err.issues.reduce((res, issue) => res + `${res ? "\n" : ""}${issue.path}: ${issue.message}`, "")
     }
