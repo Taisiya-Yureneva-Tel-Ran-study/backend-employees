@@ -38,6 +38,10 @@ class EmployeeServiceMap implements EmployeeService{
     }
 
     private employees: Map<string, Employee> = new Map();
+
+    setMap(employees: Map<string, Employee>) {
+        this.employees = employees;
+    }
 }
 
 const service = new EmployeeServiceMap();

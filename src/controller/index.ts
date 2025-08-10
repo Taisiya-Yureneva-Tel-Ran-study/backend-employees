@@ -5,6 +5,11 @@ import errorHandler from '../middleware/errorHandler.ts';
 import {service} from '../service/EmployeeServiceMap.ts';
 import { validateEmployee } from '../middleware/validation.ts';
 import { EmployeeScheme } from '../middleware/schemes.ts';
+import fileService from '../service/StoreEmployeesFileService.ts';
+
+const fileName = process.env.empFileName || "employees.json";
+const emps = fileService.fetchEmployees(fileName); 
+console.log(emps);
 
 const PORT = process.env.PORT || 3500;
 
