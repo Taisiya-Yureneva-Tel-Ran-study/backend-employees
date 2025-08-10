@@ -4,6 +4,8 @@ import EmployeeService from "./EmployeeService";
 import { EmployeeExistsError, EmployeeNotFoundError } from "../middleware/errorHandler.ts";
 
 class EmployeeServiceMap implements EmployeeService{
+    private employees: Map<string, Employee> = new Map();
+
     getAll(department?: string): Employee[] {
         if (department) return Array.from(this.employees.values()).filter(e => e.department === department);
         return Array.from(this.employees.values());
@@ -14,16 +16,17 @@ class EmployeeServiceMap implements EmployeeService{
         if (this.employees.has(obj.id))
             throw new EmployeeExistsError(obj.id);
         this.employees.set(obj.id, obj);
-        return this.employees.get(obj.id);
+        return {...this.employees.get(obj.id)};
     }
 
     getEmployee(id: string): Employee {
-        return this.employees.get(id);
+        return {...this.employees.get(id)};
     }
 
-    deleteEmployee(id: string): boolean {
-        const res = this.employees.delete(id);
+    deleteEmployee(id: string): Employee {
+        const res: Employee = this.employees.get(id);
         if (!res) throw new EmployeeNotFoundError(`Cannot remove employee: employee with id '${id}' not found`);
+        this.employees.delete(id);
         return res;
     }
 
@@ -37,10 +40,8 @@ class EmployeeServiceMap implements EmployeeService{
         return {...newEmp};
     }
 
-    private employees: Map<string, Employee> = new Map();
-
-    setMap(employees: Map<string, Employee>) {
-        this.employees = employees;
+    setEmployeesMap(employees: Employee[]) {
+        employees.map((e) => this.addEmployee({...e}));
     }
 }
 

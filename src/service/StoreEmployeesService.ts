@@ -1,5 +1,6 @@
 import { Employee } from "../model/Employee";
 
 export default interface StoreEmployeesService {
-    fetchEmployees(path: string): Employee[];
+    fetchEmployees(): Employee[];
+    saveEmployees(employees: Employee[]): void;
 }
