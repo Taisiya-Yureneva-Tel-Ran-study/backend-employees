@@ -6,6 +6,7 @@ import { service } from '../service/EmployeeServiceMap.ts';
 import { validateEmployee } from '../middleware/validation.ts';
 import { EmployeeScheme, PartialEmployeeScheme } from '../middleware/schemes.ts';
 import fileService from '../service/StoreEmployeesFileService.ts';
+import accountingService from '../service/AccountingServiceMap.ts';
 
 // Fetching employees and setting the map
 const emps = fileService.fetchEmployees();
@@ -19,6 +20,10 @@ const server = app.listen(PORT, () => console.log('Server started on port ', POR
 app.use(express.json());
 
 app.use(morgan("dev"));
+
+app.post("/login", (req, res) => {
+    res.send(accountingService.login(req.body));
+})
 
 app.get("/employees", (req, res) => {
     const re = service.getAll(req.query.department as string);

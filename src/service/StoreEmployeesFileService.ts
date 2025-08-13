@@ -1,7 +1,6 @@
 import StoreEmployeesService from "./StoreEmployeesService.ts";
 import { Employee } from "../model/Employee.ts";
 import { readFileSync, writeFileSync } from "node:fs";
-import { validateEmployeeJson } from "../middleware/validation.ts";
 import { EmployeeScheme } from "../middleware/schemes.ts";
 import { ZodError } from "zod";
 
@@ -13,7 +12,7 @@ class StoreEmployeesFileService implements StoreEmployeesService {
         try {
             const res = readFileSync(this.filename, { "encoding": "utf-8" });
             emps = JSON.parse(res).map((emp: Employee) => {
-                return validateEmployeeJson(EmployeeScheme, emp);
+                return EmployeeScheme.parse(emp);
             });
         } catch (err) {
             let message = err.message;
