@@ -1,7 +1,7 @@
 import StoreEmployeesService from "./StoreEmployeesService.ts";
 import { Employee } from "../model/Employee.ts";
 import { readFileSync, writeFileSync } from "node:fs";
-import { EmployeeScheme } from "../middleware/schemes.ts";
+import { EmployeeScheme } from "../middleware/validation/schemes.ts";
 import { ZodError } from "zod";
 
 class StoreEmployeesFileService implements StoreEmployeesService {
