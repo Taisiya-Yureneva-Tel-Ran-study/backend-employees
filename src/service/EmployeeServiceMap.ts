@@ -2,8 +2,10 @@ import { randomUUID } from "crypto";
 import { Employee } from "../model/Employee";
 import EmployeeService from "./EmployeeService";
 import { EmployeeExistsError, EmployeeNotFoundError } from "../middleware/errorHandler.ts";
+import { readFileSync, writeFileSync } from "fs";
+import { EmployeeScheme } from "../middleware/validation/schemes.ts";
 
-class EmployeeServiceMap implements EmployeeService{
+class EmployeeServiceMap implements EmployeeService {
     private employees: Map<string, Employee> = new Map();
 
     getAll(department?: string): Employee[] {
@@ -16,11 +18,11 @@ class EmployeeServiceMap implements EmployeeService{
         if (this.employees.has(obj.id))
             throw new EmployeeExistsError(obj.id);
         this.employees.set(obj.id, obj);
-        return {...this.employees.get(obj.id)};
+        return { ...this.employees.get(obj.id) };
     }
 
     getEmployee(id: string): Employee {
-        return {...this.employees.get(id)};
+        return { ...this.employees.get(id) };
     }
 
     deleteEmployee(id: string): Employee {
@@ -37,13 +39,26 @@ class EmployeeServiceMap implements EmployeeService{
 
         let newEmp = { ...emp, ...obj };
         this.employees.set(id, newEmp);
-        return {...newEmp};
+        return { ...newEmp };
     }
 
-    setEmployeesMap(employees: Employee[]) {
-        employees.map((e) => this.addEmployee({...e}));
+    setEmployeesMap() {
+        try {
+            const res = readFileSync(process.env.empFileName || "employees.json", { "encoding": "utf-8" });
+            const employees = JSON.parse(res);
+            employees & employees.forEach((emp: Employee) => {
+                if (EmployeeScheme.parse(emp)) this.addEmployee(emp);
+            });
+        } catch (e) {
+            console.log("Could not fetch employees from file: ", e.message);
+        }
+    }
+
+    save() {
+        writeFileSync(process.env.empFileName || "employees.json", JSON.stringify(this.getAll()));
     }
 }
 
 const service = new EmployeeServiceMap();
+service.setEmployeesMap();
 export { service };

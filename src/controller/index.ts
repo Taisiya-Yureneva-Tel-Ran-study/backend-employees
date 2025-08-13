@@ -5,14 +5,9 @@ import errorHandler from '../middleware/errorHandler.ts';
 import { service } from '../service/EmployeeServiceMap.ts';
 import { validateEmployee } from '../middleware/validation/validation.ts';
 import { EmployeeScheme, PartialEmployeeScheme } from '../middleware/validation/schemes.ts';
-import fileService from '../service/StoreEmployeesFileService.ts';
 import accountingService from '../service/AccountingServiceMap.ts';
 import { authenticate } from '../middleware/auth/authentication.ts';
 import { authorize } from '../middleware/auth/authorization.ts';
-
-// Fetching employees and setting the map
-const emps = fileService.fetchEmployees();
-service.setEmployeesMap(emps);
 
 const PORT = process.env.PORT || 3500;
 
@@ -29,7 +24,7 @@ app.post("/login", (req, res) => {
 
 app.use(authenticate);
 
-app.get("/employees", (req: Request & {user: string, role: string}, res) => {
+app.get("/employees", (req: Request, res) => {
     const re = service.getAll(req.query.department as string);
     res.statusCode = 200;
     res.json(re);
@@ -42,7 +37,7 @@ app.get("/employees/:id", (req, res) => {
 
 app.use(authorize);
 
-app.post("/employees", authenticate, validateEmployee(EmployeeScheme), (req, res) => {
+app.post("/employees", validateEmployee(EmployeeScheme), (req, res) => {
     res.statusCode = 200;
     res.send(service.addEmployee(req.body));
 })
@@ -61,7 +56,7 @@ app.patch("/employees/:id", validateEmployee(PartialEmployeeScheme), (req, res) 
 app.use(errorHandler);
 
 function shutdown() {
-    fileService.saveEmployees(service.getAll());
+    service.save();
     server.close(() => console.log('Server stopped'));
 }
 
