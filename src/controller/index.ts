@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request } from 'express';
 import "dotenv/config";
 import morgan from 'morgan';
 import errorHandler from '../middleware/errorHandler.ts';
@@ -7,6 +7,8 @@ import { validateEmployee } from '../middleware/validation.ts';
 import { EmployeeScheme, PartialEmployeeScheme } from '../middleware/schemes.ts';
 import fileService from '../service/StoreEmployeesFileService.ts';
 import accountingService from '../service/AccountingServiceMap.ts';
+import { authenticate } from '../middleware/auth/authentication.ts';
+import { authorize } from '../middleware/auth/authorization.ts';
 
 // Fetching employees and setting the map
 const emps = fileService.fetchEmployees();
@@ -25,20 +27,24 @@ app.post("/login", (req, res) => {
     res.send(accountingService.login(req.body));
 })
 
-app.get("/employees", (req, res) => {
+app.use(authenticate);
+
+app.get("/employees", (req: Request & {user: string, role: string}, res) => {
     const re = service.getAll(req.query.department as string);
     res.statusCode = 200;
     res.json(re);
 })
 
-app.post("/employees", validateEmployee(EmployeeScheme), (req, res) => {
-    res.statusCode = 200;
-    res.send(service.addEmployee(req.body));
-})
-
 app.get("/employees/:id", (req, res) => {
     res.statusCode = 200;
     res.json(service.getEmployee(req.params.id));
+})
+
+app.use(authorize);
+
+app.post("/employees", authenticate, validateEmployee(EmployeeScheme), (req, res) => {
+    res.statusCode = 200;
+    res.send(service.addEmployee(req.body));
 })
 
 app.delete("/employees/:id", (req, res) => {

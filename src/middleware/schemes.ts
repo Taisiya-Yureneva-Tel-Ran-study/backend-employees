@@ -7,6 +7,6 @@ export const EmployeeScheme = z.object({
     department: z.string().min(2).max(15),
     birthDate: z.iso.date().min(10).max(10),
     salary: z.number().min(1000).max(1000000)
-}).strict();
+});
 
 export const PartialEmployeeScheme = EmployeeScheme.partial();
