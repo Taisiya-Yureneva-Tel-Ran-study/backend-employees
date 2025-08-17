@@ -6,4 +6,6 @@ export default interface EmployeeService {
     deleteEmployee(id: string): Employee;
     editEmployee(id: string, obj: Partial<Employee>): Employee;
     getAll(): Employee[];
+    save(): void;
+    setEmployeesMap(): void;
 }

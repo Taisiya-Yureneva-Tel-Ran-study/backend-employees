@@ -3,6 +3,7 @@ import Account from "../model/Account.ts";
 import LoginData from "../model/LoginData.ts";
 import AccountingService from "./AccountingService.ts";
 import JwtUtil from "../security/JwtUtil.ts";
+import LoginResponse from "../model/LoginResponse.ts";
 
 class AccountingServiceMap implements AccountingService {
     private _accounts: Map<string, Account> = new Map();
@@ -12,11 +13,17 @@ class AccountingServiceMap implements AccountingService {
         this._accounts.set("user",  {userName: "user",  password: "$2a$10$HaY2kh2ZVxffEzX1TcuNZ.kbcIrWbLYBHjkdGwzTtNm4Ir72j1Gu.", role: "USER"});
     }
 
-    login(loginData: LoginData): string {
+    login(loginData: LoginData): LoginResponse {
         const account = this._accounts.get(loginData.email);
         
         if (account && compareSync(loginData.password, account.password)) {
-            return JwtUtil.getJwt(account);
+            return {
+                accessToken: JwtUtil.getJwt(account),
+                user: {
+                    email: account.userName,
+                    id:    account.role
+                }
+            };
         }
         throw new Error("Invalid credentials");
     }

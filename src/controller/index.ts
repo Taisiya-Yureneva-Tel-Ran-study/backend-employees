@@ -1,13 +1,11 @@
-import express, { Request } from 'express';
+import express from 'express';
 import "dotenv/config";
 import morgan from 'morgan';
 import errorHandler from '../middleware/errorHandler.ts';
 import { service } from '../service/EmployeeServiceMap.ts';
-import { validateEmployee } from '../middleware/validation/validation.ts';
-import { EmployeeScheme, PartialEmployeeScheme } from '../middleware/validation/schemes.ts';
 import accountingService from '../service/AccountingServiceMap.ts';
-import { authenticate } from '../middleware/auth/authentication.ts';
-import { authorize } from '../middleware/auth/authorization.ts';
+import cors from 'cors';
+import employeeRoutes from './routes/employees-router.ts';
 
 const PORT = process.env.PORT || 3500;
 
@@ -15,42 +13,14 @@ const app = express();
 const server = app.listen(PORT, () => console.log('Server started on port ', PORT));
 
 app.use(express.json());
+app.use(cors());
+app.use("/employees", employeeRoutes);
 
 app.use(morgan("dev"));
 
+
 app.post("/login", (req, res) => {
-    res.send(accountingService.login(req.body));
-})
-
-app.use(authenticate);
-
-app.get("/employees", (req: Request, res) => {
-    const re = service.getAll(req.query.department as string);
-    res.statusCode = 200;
-    res.json(re);
-})
-
-app.get("/employees/:id", (req, res) => {
-    res.statusCode = 200;
-    res.json(service.getEmployee(req.params.id));
-})
-
-app.use(authorize);
-
-app.post("/employees", validateEmployee(EmployeeScheme), (req, res) => {
-    res.statusCode = 200;
-    res.send(service.addEmployee(req.body));
-})
-
-app.delete("/employees/:id", (req, res) => {
-    
-    res.statusCode = 200;
-    res.json(service.deleteEmployee(req.params.id));
-});
-
-app.patch("/employees/:id", validateEmployee(PartialEmployeeScheme), (req, res) => {
-    const re = service.editEmployee(req.params.id, req.body);
-    res.json(re);
+    res.json(accountingService.login(req.body));
 })
 
 app.use(errorHandler);
@@ -62,3 +32,5 @@ function shutdown() {
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+
+export default app;

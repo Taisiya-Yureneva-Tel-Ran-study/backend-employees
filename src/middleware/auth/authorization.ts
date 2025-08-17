@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response } from "express";
+import { ForbiddenError } from "../errorHandler.ts";
 
-export function authorize(req: Request & {user: string, role: string}, res: Response, next: NextFunction) {
-    if (req.role === 'ADMIN') {
+export function authorize(roles: string[]): (req: Request & {user: string, role: string}, res: Response, next: NextFunction) => void {
+    return (req: Request & {user: string, role: string}, res: Response, next: NextFunction) => {
+    if (roles.includes(req.role)) {
         next();
     } else {
-        res.status(403).send('Forbidden');
+        throw new ForbiddenError();
     }
+}
 }

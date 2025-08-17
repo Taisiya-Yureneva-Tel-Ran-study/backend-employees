@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import JwtUtil from "../../security/JwtUtil.ts";
+import { UnathorizedError } from "../errorHandler.ts";
 
 const BEARER = "Bearer ";
 
@@ -13,12 +14,10 @@ export function authenticate(req: Request & { user: string, role: string }, res:
             req.user = payload.sub;
             req.role = payload.role;
         } catch (error) {
-            res.status(401).send("Unauthorized");
-            return;
+            throw new UnathorizedError();
         }
     } else {
-        res.status(401).send("Unauthorized");
-        return;
+        throw new UnathorizedError();
     }
 
     next();

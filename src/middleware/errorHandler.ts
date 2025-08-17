@@ -15,13 +15,29 @@ export class EmployeeExistsError extends Error {
     }
 }
 
+export class UnathorizedError extends Error {
+    constructor() {
+        super(`You need to be authorized to access this resource.`);
+        this.name = "UnathorizedError";
+    }
+}
+export class ForbiddenError extends Error {
+    constructor() {
+        super(`You are not authorized to access this resource.`);
+        this.name = "ForbiddenError";
+    }
+}
+
+const ErrCodes: { [key: string]: number } = {
+    "EmployeeNotFoundError": 404,
+    "EmployeeExistsError": 409,
+    "UnathorizedError": 401,
+    "ForbiddenError": 403,
+}
+
 export default function errorHandler(err: Error, _: Request, res: Response, __: NextFunction) {
-    res.statusCode = 400;
+    res.statusCode = ErrCodes[err.name] || 400;
     let message = err.message;
-    if (err instanceof EmployeeNotFoundError)
-        res.statusCode = 404;
-    if (err instanceof EmployeeExistsError)
-        res.statusCode = 409;
     if (err instanceof ZodError) {
         message = err.issues.reduce((res, issue) => res + `${res ? "\n" : ""}${issue.path}: ${issue.message}`, "")
     }

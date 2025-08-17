@@ -3,7 +3,7 @@ import Account from '../model/Account';
 
 export default class JwtUtil {
     static getJwt(account: Account): string {
-        return jwt.sign({role: account.role}, process.env.JWT_SECRET, {expiresIn: '1h', subject: account.userName});
+        return jwt.sign({role: account.role}, process.env.JWT_SECRET, {subject: account.userName});
     }
 
     static verifyToken(token: string): JwtPayload {
