@@ -3,26 +3,26 @@ import EmployeeService from "./EmployeeService";
 
 export default class EmployeesServiceMock implements EmployeeService {
     private employeesMap: Map<string, Employee> = new Map();
-    save(): void {
+    async save(): Promise<void> {
 
     }
     setEmployeesMap(): void {
 
     }
 
-    addEmployee(obj: Employee): Employee {
+    async addEmployee(obj: Employee): Promise<Employee> {
         this.employeesMap.set(obj.id, obj);
         return {...this.employeesMap.get(obj.id) };
     }
-    getEmployee(id: string): Employee {
+    async getEmployee(id: string): Promise<Employee> {
         return { ...this.employeesMap.get(id) };
     }
-    deleteEmployee(id: string): Employee {
+    async deleteEmployee(id: string): Promise<Employee> {
         const employee = this.employeesMap.get(id);
         this.employeesMap.delete(id);
         return employee;
     }
-    editEmployee(id: string, obj: Partial<Employee>): Employee {
+    async editEmployee(id: string, obj: Partial<Employee>): Promise<Employee> {
         let emp = this.employeesMap.get(id);
 
         let newEmp = { ...emp, ...obj };
@@ -30,7 +30,7 @@ export default class EmployeesServiceMock implements EmployeeService {
         return { ...newEmp };
 
     }
-    getAll(): Employee[] {
+    async getAll(): Promise<Employee[]> {
         return [{}] as Employee[];
     }
 

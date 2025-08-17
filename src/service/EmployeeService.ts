@@ -1,11 +1,11 @@
 import { Employee } from "../model/Employee";
 
 export default interface EmployeeService {
-    addEmployee(obj: Employee): Employee;
-    getEmployee(id: string): Employee;
-    deleteEmployee(id: string): Employee;
-    editEmployee(id: string, obj: Partial<Employee>): Employee;
-    getAll(): Employee[];
-    save(): void;
+    addEmployee(obj: Employee): Promise<Employee>;
+    getEmployee(id: string): Promise<Employee>;
+    deleteEmployee(id: string): Promise<Employee>;
+    editEmployee(id: string, obj: Partial<Employee>): Promise<Employee>;
+    getAll(): Promise<Employee[]>;
+    save(): Promise<void>;
     setEmployeesMap(): void;
 }
