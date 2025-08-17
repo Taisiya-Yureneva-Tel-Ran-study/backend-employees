@@ -34,7 +34,6 @@ class EmployeeServiceMap implements EmployeeService {
     }
 
     editEmployee(id: string, obj: Partial<Employee>): Employee {
-        console.log(obj);
         let emp = this.employees.get(id);
         if (!emp) throw new EmployeeNotFoundError(`Employee with '${id}' not found. Cannot update.`);
 
@@ -60,6 +59,6 @@ class EmployeeServiceMap implements EmployeeService {
     }
 }
 
-const service = process.env.NODE_TEST_CONTEXT ? new EmployeesServiceMock() : new EmployeeServiceMap();
+const service =  new EmployeeServiceMap();
 service.setEmployeesMap();
 export { service };

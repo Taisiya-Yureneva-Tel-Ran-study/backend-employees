@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import Account from '../model/Account';
+import "dotenv/config";
 
 export default class JwtUtil {
     static getJwt(account: Account): string {

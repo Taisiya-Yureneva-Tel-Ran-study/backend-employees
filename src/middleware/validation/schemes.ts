@@ -10,3 +10,8 @@ export const EmployeeScheme = z.object({
 });
 
 export const PartialEmployeeScheme = EmployeeScheme.partial();
+
+export const LoginDataScheme = z.object({
+    email: z.string(),
+    password: z.string().min(4).max(20)
+});

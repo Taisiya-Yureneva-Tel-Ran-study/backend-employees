@@ -8,7 +8,8 @@
   "main": "src/controller/index.ts",
   "scripts": {
     "dev": "nodemon ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-controller": "node --test --no-warnings --loader ts-node/esm src/controller/index.test.ts"
   },
   "dependencies": {
     "@types/config": "^3.3.5",
