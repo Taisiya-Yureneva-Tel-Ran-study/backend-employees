@@ -1,10 +1,11 @@
 # Node.js intro
 
-## HW #11 backend
+## HW #12 backend - added service tests
 
 ### Employees Back-End "express" WEB Service for processing CRUD requests from React application with data storing in a file with simple AAA solution
 
 ### Unit tests for routes
+### Unit tests for service
 
 ##### Environment variables
 - PORT - port number the service listens to

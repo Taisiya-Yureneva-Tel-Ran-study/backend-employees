@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { service } from '../service/EmployeeServiceMap.ts';
+import service from '../service/bootstrap.ts';
 import app from './routes/mainRoutes.ts';
 
 const PORT = process.env.PORT || 3500;

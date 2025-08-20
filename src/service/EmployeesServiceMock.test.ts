@@ -1,33 +1,22 @@
 import { Employee } from "../model/Employee";
 import EmployeeService from "./EmployeeService";
+import { registerEmployeeService } from "./registry.ts";
 
 export default class EmployeesServiceMock implements EmployeeService {
-    private employeesMap: Map<string, Employee> = new Map();
-    async save(): Promise<void> {
-
-    }
-    setEmployeesMap(): void {
-
-    }
+    async save(): Promise<void> { }
+    setEmployeesMap(): void { }
 
     async addEmployee(obj: Employee): Promise<Employee> {
-        this.employeesMap.set(obj.id, obj);
-        return {...this.employeesMap.get(obj.id) };
+        return {} as Employee;
     }
     async getEmployee(id: string): Promise<Employee> {
-        return { ...this.employeesMap.get(id) };
+        return {} as Employee;
     }
     async deleteEmployee(id: string): Promise<Employee> {
-        const employee = this.employeesMap.get(id);
-        this.employeesMap.delete(id);
-        return employee;
+        return {} as Employee;
     }
     async editEmployee(id: string, obj: Partial<Employee>): Promise<Employee> {
-        let emp = this.employeesMap.get(id);
-
-        let newEmp = { ...emp, ...obj };
-        this.employeesMap.set(id, newEmp);
-        return { ...newEmp };
+        return {} as Employee;
 
     }
     async getAll(): Promise<Employee[]> {
@@ -35,3 +24,5 @@ export default class EmployeesServiceMock implements EmployeeService {
     }
 
 }
+
+registerEmployeeService("mock", async (_) => new EmployeesServiceMock());

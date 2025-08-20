@@ -4,7 +4,7 @@ import EmployeeService from "./EmployeeService";
 import { EmployeeExistsError, EmployeeNotFoundError } from "../middleware/errorHandler.ts";
 import { readFileSync, writeFileSync } from "fs";
 import { EmployeeScheme } from "../middleware/validation/schemes.ts";
-import EmployeesServiceMock from "./EmployeesServiceMock.test.ts";
+import { registerEmployeeService } from "./registry.ts";
 
 class EmployeeServiceMap implements EmployeeService {
     private employees: Map<string, Employee> = new Map();
@@ -59,6 +59,4 @@ class EmployeeServiceMap implements EmployeeService {
     }
 }
 
-const service =  new EmployeeServiceMap();
-service.setEmployeesMap();
-export { service };
+registerEmployeeService("map", async (_) => new EmployeeServiceMap());

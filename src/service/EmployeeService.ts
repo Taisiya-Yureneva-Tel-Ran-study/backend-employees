@@ -5,7 +5,7 @@ export default interface EmployeeService {
     getEmployee(id: string): Promise<Employee>;
     deleteEmployee(id: string): Promise<Employee>;
     editEmployee(id: string, obj: Partial<Employee>): Promise<Employee>;
-    getAll(): Promise<Employee[]>;
+    getAll(department?: string): Promise<Employee[]>;
     save(): Promise<void>;
     setEmployeesMap(): void;
 }

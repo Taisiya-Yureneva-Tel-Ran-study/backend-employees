@@ -1,7 +1,7 @@
 import express, {Request} from "express";
 import { EmployeeScheme, PartialEmployeeScheme } from "../../middleware/validation/schemes.ts";
 import { validateEmployee } from "../../middleware/validation/validation.ts";
-import { service } from "../../service/EmployeeServiceMap.ts";
+import  service from "../../service/bootstrap.ts";
 import { authorize } from "../../middleware/auth/authorization.ts";
 import { authenticate } from "../../middleware/auth/authentication.ts";
 
@@ -10,7 +10,7 @@ const employeeRoutes = express.Router();
 employeeRoutes.use(authenticate);
 
 employeeRoutes.get("/", authorize(["ADMIN", "USER"]), async (req: Request, res) => {
-    const re = await service.getAll(req.query.department as string);
+    const re = await service.getAll();
     res.statusCode = 200;
     res.json(re);
 })
