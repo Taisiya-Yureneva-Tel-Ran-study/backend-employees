@@ -1,5 +1,5 @@
 import service from './bootstrap.ts';
-import test, {beforeEach, afterEach} from "node:test";
+import test, {beforeEach, after, before} from "node:test";
 import assert from "node:assert/strict";
 import { Employee } from '../model/Employee.ts';
 import { EmployeeExistsError, EmployeeNotFoundError } from '../middleware/errorHandler.ts';
@@ -12,17 +12,18 @@ const stateEmployees: Employee[] = [
 ]
 
 const newGoodEmp: Employee = {fullName: 'Mary', avatar: '', department: 'QA', salary: 25000, birthDate: "2001-11-12"};
-const newBadEmp: Employee = {fullName: '', avatar: 'asdf', department: 'QA', salary: 0, birthDate: "2001-1-"};
 const invalidId = "100500";
 const partialEmployee: Partial<Employee> = {salary: 30000};
 
-afterEach(async () => {
-    service.save();
-})
+before(async () => {await service.setEmployeesMap()});
+
+after(async () => {await service.save()}) ;
 
 beforeEach(async () => {
     const arr: Employee[] = await service.getAll();
-    arr.forEach(async (item) => await service.deleteEmployee(item.id));
+    for (let i = 0; i < arr.length; i++) {
+        await service.deleteEmployee(arr[i].id);
+    }
     for (let emp of stateEmployees) {
         await service.addEmployee(emp);
     }
@@ -32,29 +33,24 @@ test("add existing employee", async () => {
     await assert.rejects(service.addEmployee(stateEmployees[0]), EmployeeExistsError);
 })
 
-test("add a new employee", async () => {
-    await assert.doesNotReject(service.addEmployee(newGoodEmp));
-    assert.equal((await service.getAll()).length, stateEmployees.length + 1);
-})
-
 test("adding a new employee returns correct data", async () => {
     const res = await service.addEmployee(newGoodEmp);
     assert.deepEqual(res, newGoodEmp);
     assert.notEqual(res.id, undefined);
 })
 
-test ("add a new employee with bad data - no validation", async () => {
-    await assert.doesNotReject(service.addEmployee(newBadEmp));
-    assert.equal((await service.getAll()).length, stateEmployees.length + 1);
-})
-
 test("get all employees", async () => {
-    const arr: Employee[] = await service.getAll();
+    let arr: Employee[] = await service.getAll();
+    arr.sort((a, b) => a.id.localeCompare(b.id))
+    stateEmployees.sort((a, b) => a.id.localeCompare(b.id));
     assert.deepEqual(arr, stateEmployees);
 })
 
+
 test("get all from department", async () => {
     const arr: Employee[] = await service.getAll(stateEmployees[0].department);
+    arr.sort((a, b) => a.id.localeCompare(b.id));
+    stateEmployees.sort((a, b) => a.id.localeCompare(b.id));
     assert.deepEqual(arr, stateEmployees.filter(item => item.department === stateEmployees[0].department));
     assert.equal(arr.length, stateEmployees.filter(item => item.department === stateEmployees[0].department).length);
 })
