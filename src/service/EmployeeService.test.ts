@@ -1,5 +1,5 @@
 import service from './bootstrap.ts';
-import test, {beforeEach} from "node:test";
+import test, {beforeEach, afterEach} from "node:test";
 import assert from "node:assert/strict";
 import { Employee } from '../model/Employee.ts';
 import { EmployeeExistsError, EmployeeNotFoundError } from '../middleware/errorHandler.ts';
@@ -15,6 +15,10 @@ const newGoodEmp: Employee = {fullName: 'Mary', avatar: '', department: 'QA', sa
 const newBadEmp: Employee = {fullName: '', avatar: 'asdf', department: 'QA', salary: 0, birthDate: "2001-1-"};
 const invalidId = "100500";
 const partialEmployee: Partial<Employee> = {salary: 30000};
+
+afterEach(async () => {
+    service.save();
+})
 
 beforeEach(async () => {
     const arr: Employee[] = await service.getAll();
