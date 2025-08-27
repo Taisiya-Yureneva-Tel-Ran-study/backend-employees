@@ -22,10 +22,11 @@ export default abstract class AbastractEmployeesServiceMongo implements Employee
 
     async addEmployee(obj: Employee): Promise<Employee>{
         try {
-            return await this.collection.insertOne(obj).then(() => this.collection.findOne({id: obj.id}));
+            await this.collection.insertOne(obj);
         } catch (e) {
             throw new EmployeeExistsError(obj.id);
         }
+            return obj;
     };
 
     async getEmployee(id: string): Promise<Employee>{
@@ -39,7 +40,7 @@ export default abstract class AbastractEmployeesServiceMongo implements Employee
     };
 
     async editEmployee(id: string, obj: Partial<Employee>): Promise<Employee> {
-        const res = await this.collection.updateOne({id}, {$set: obj}).then(() => this.collection.findOne({id}));
+        const res = await this.collection.findOneAndUpdate({id}, {$set: obj}, {returnDocument: "after"});
         if (!res) throw new EmployeeNotFoundError(id);
         return res;
     };
