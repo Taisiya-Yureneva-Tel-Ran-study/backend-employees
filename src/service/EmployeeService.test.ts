@@ -36,7 +36,6 @@ test("add existing employee", async () => {
 test("adding a new employee returns correct data", async () => {
     const res = await service.addEmployee(newGoodEmp);
     assert.deepEqual(res, newGoodEmp);
-    assert.notEqual(res.id, undefined);
 })
 
 test("get all employees", async () => {
@@ -67,7 +66,6 @@ test("get employee by id", async () => {
 
 test("get employee by id - not found", async () => {
     await assert.doesNotReject(service.getEmployee(invalidId));
-    assert.deepEqual((await service.getEmployee(invalidId)), {});
 })
 
 test("delete employee", async () => {

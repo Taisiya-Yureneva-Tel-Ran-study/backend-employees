@@ -1,11 +1,13 @@
 # Node.js intro
 
-## HW #12 backend - added service tests
+## HW #14 backend - completing class AbstractEmployeesServiceMongo
 
-### Employees Back-End "express" WEB Service for processing CRUD requests from React application with data storing in a file with simple AAA solution
+### Employees Back-End "express" WEB Service for processing CRUD requests from React application with simple AAA solution
 
 ### Unit tests for routes
 ### Unit tests for service
+### Service registry
+### Various services (file, mock, SqLite3, Mongo)
 
 ##### Environment variables
 - PORT - port number the service listens to
